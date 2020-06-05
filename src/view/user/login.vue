@@ -21,7 +21,7 @@
                         <span>
                             {{islogin?'还没有账号？去':'已有账号，直接'}}
                         </span>
-                        <span class="abtn" @click="ToRigete(islogin)">
+                        <span class="abtn" @click="ToChange(islogin)">
                             {{islogin?'注册':'登陆'}}
                         </span>
                     </p>
@@ -31,7 +31,7 @@
     </div>
 </template>
 <script>
-    import { login,registe } from '../../api/user'
+    import { login,registe,userInfo } from '../../api/user'
     const sha256 = require('js-sha256').sha256
     export default {
         name: 'Login',
@@ -56,7 +56,6 @@
             }
         },
         created(){
-            // this.$refs.myVideo.playbackRate = 0.5;
             console.log(this.$store.state.title)
         },
         methods:{
@@ -67,38 +66,46 @@
                 this.loginForm.password = sha256(this.loginForm.password)
                 let data = this.loginForm
                 this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    if(islogin){
-                        login(data).then((res)=>{
-                            if(res.code == 0){
-                                this.$message({
-                                    message: res.msg,
-                                    type: 'success'
-                                });
-                            }else{
-                                this.$message.error(res.msg)
-                            }
-                        })
-                    }else{
-                        registe(data).then((res)=>{
-                            if(res.code == 0){
-                                this.$message({
-                                    message: res.msg,
-                                    type: 'success'
-                                });
-                            }else{
-                                this.$message.error(res.msg)
-                            }
-                        })
+                    if (valid) {
+                        if(islogin){
+                            login(data).then((res)=>{
+                                if(res.code == 0){
+                                    this.$message({
+                                        message: res.msg,
+                                        type: 'success'
+                                    });
+                                    localStorage.setItem('accessToken', res.data)
+                                    userInfo().then((res)=>{
+                                        if(res.code == 0){
+                                            this.$router.push('/home')
+                                        }
+                                    })
+                                    this.$refs.ruleForm.resetFields()
+                                }else{
+                                    this.$message.error(res.msg)
+                                    this.loginForm.password = null
+                                }
+                            })
+                        }else{
+                            registe(data).then((res)=>{
+                                if(res.code == 0){
+                                    this.$message({
+                                        message: res.msg,
+                                        type: 'success'
+                                    });
+                                    this.$refs.ruleForm.resetFields()
+                                }else{
+                                    this.$message.error(res.msg)
+                                }
+                            })
+                        }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
                     }
-                    this.$refs.ruleForm.resetFields()
-                } else {
-                    console.log('error submit!!');
-                    return false;
-                }
                 });
             },
-            ToRigete(){
+            ToChange(){
                 this.islogin = !this.islogin
                 this.$refs.ruleForm.resetFields()
                 this.$refs.ruleForm.clearValidate()

@@ -14,3 +14,10 @@ export function registe(data) {
     data:data
   })
 }
+
+export function userInfo() {
+  return request({
+    url: '/userInfo',
+    method:'get'
+  })
+}
