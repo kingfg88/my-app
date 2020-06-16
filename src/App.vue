@@ -6,7 +6,21 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data () {
+    return{
+      isLogin:false
+    }
+  },
+  watch:{
+    
+  },
+  created(){
+    
+  },
+  updated(){
+    
+  }
 }
 </script>
 

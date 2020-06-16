@@ -24,6 +24,33 @@ body,#app{
     cursor: pointer;
     padding:0 5px;
 }
+.float_r{
+    float:right;
+}
+//登陆页
+//改变默认输入框背景
 .el-input__inner{
     background-color:inherit;
 }
+//首页弹出框
+.diologform{
+    .el-dialog__body{
+        width:70%;
+        margin-left:1rem;
+        .el-select{
+            display: block;
+        }
+        .el-date-editor.el-input{
+            width:100%;
+        }
+        .el-cascader{
+            width:100%;
+        }
+    }
+} 
+//上传
+.avatar-uploader{
+    text-align: left;
+    
+}
+

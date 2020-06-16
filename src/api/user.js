@@ -21,3 +21,10 @@ export function userInfo() {
     method:'get'
   })
 }
+
+export function test() {
+  return request({
+    url: '/test',
+    method:'get'
+  })
+}

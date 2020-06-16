@@ -9,13 +9,13 @@ const service = axios.create({
         'Content-Type': 'application/json;charset=UTF-8'
     }
 })
-const token = localStorage.getItem('accessToken')
 // 请求拦截器
 service.interceptors.request.use(
     config => {
+    const token = localStorage.getItem('accessToken')
     //请求前是否已获取token，如果有设置token为X-Token,
       if (token) {
-        config.headers['token'] = token
+        config.headers['authorization'] = `Bearer ${token}`
       }
       return config
     },

@@ -17,6 +17,7 @@
                 </el-form-item>
                 <el-form-item class='btnGroup'>
                     <el-button type="primary" @click="ToLogin('ruleForm',islogin)">{{islogin?'登陆':'注册'}}</el-button>
+                    <!-- <el-button type="primary" @click="Totest()">测试</el-button> -->
                     <p>
                         <span>
                             {{islogin?'还没有账号？去':'已有账号，直接'}}
@@ -31,7 +32,7 @@
     </div>
 </template>
 <script>
-    import { login,registe,userInfo } from '../../api/user'
+    import { login,registe,userInfo,test } from '../../api/user'
     const sha256 = require('js-sha256').sha256
     export default {
         name: 'Login',
@@ -62,6 +63,11 @@
             showWord(){
                 this.show=!this.show;
             },
+            Totest(){
+                test().then((res)=>{
+                    console.log(res)
+                })
+            },
             ToLogin(formName,islogin) {
                 this.loginForm.password = sha256(this.loginForm.password)
                 let data = this.loginForm
@@ -77,7 +83,10 @@
                                     localStorage.setItem('accessToken', res.data)
                                     userInfo().then((res)=>{
                                         if(res.code == 0){
+                                            localStorage.setItem('userInfo', JSON.stringify(res.data))
                                             this.$router.push('/home')
+                                        }else{
+                                            this.$message.error(res.msg);
                                         }
                                     })
                                     this.$refs.ruleForm.resetFields()
@@ -93,6 +102,7 @@
                                         message: res.msg,
                                         type: 'success'
                                     });
+                                    this.islogin = true
                                     this.$refs.ruleForm.resetFields()
                                 }else{
                                     this.$message.error(res.msg)
