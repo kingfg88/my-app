@@ -205,6 +205,10 @@
                                 value:'西班牙人',
                                 label:'西班牙人'
                             },
+                            {
+                                value:'马德里竞技',
+                                label:'马德里竞技'
+                            },
                         ],
                     },{
                         value: '英超',
@@ -227,6 +231,35 @@
                             },{
                                 value:'热刺',
                                 label:'热刺'
+                            },
+                        ],
+                    },{
+                        value: '意甲',
+                        label: '意甲',
+                        children:[
+                            {
+                                value:'罗马',
+                                label:'罗马'
+                            },
+                            {
+                                value:'尤文图斯',
+                                label:'尤文图斯'
+                            },
+                            {
+                                value:'国际米兰',
+                                label:'国际米兰'
+                            },
+                            {
+                                value:'AC米兰',
+                                label:'AC米兰'
+                            },
+                            {
+                                value:'拉齐奥',
+                                label:'拉齐奥'
+                            },
+                            {
+                                value:'佛罗伦萨',
+                                label:'佛罗伦萨'
                             },
                         ],
                     },
@@ -374,9 +407,11 @@
             //获取分页子组件传值
             getpageSon(data){
                 let val = data
+                this.pageData.current = val.currentChange?val.currentChange:this.pageData.current,
+                this.pageData.size = val.sizeChange?val.sizeChange:this.pageData.size
                 let params = {
-                    page:val.currentChange?val.currentChange:this.pageData.current,
-                    size:val.sizeChange?val.sizeChange:this.pageData.size
+                    page:this.pageData.current,
+                    size:this.pageData.size
                 }
                 this.getData(params)
             },

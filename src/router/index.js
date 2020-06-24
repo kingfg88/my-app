@@ -17,11 +17,7 @@ export default new Router({
       name: 'Login',
       component: Login
     },
-    {
-      path: '/center',
-      name: 'Center',
-      component: Center
-    },
+    
     {
       path: '/',
       name: 'index',
@@ -36,6 +32,11 @@ export default new Router({
           path: '/form',
           name: 'Form',
           component: Form
+        },
+        {
+          path: '/center',
+          name: 'Center',
+          component: Center
         },
       ]
     },

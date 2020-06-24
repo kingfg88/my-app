@@ -9,8 +9,10 @@ import 'element-ui/lib/theme-chalk/index.css';
 import './style/index.scss'
 import api from './api/index'
 
-Vue.config.productionTip = false
+import VueCropper from 'vue-cropper'
 
+Vue.config.productionTip = false
+Vue.use(VueCropper)
 Vue.use(ElementUI)
 
 Vue.prototype.$api = api
