@@ -89,7 +89,7 @@
                 headData:[
                     {
                         prop:'time',
-                        label:'时间'
+                        label:'加入时间'
                     },{
                         prop:'name',
                         label:'姓名'
@@ -104,14 +104,15 @@
                 tableData: [],
                 btnData:[
                     {
+                        btnText:'详情',
+                        btnType:'success'
+                    },
+                    {
                         btnText:'编辑',
                         btnType:'primary'
                     },{
                         btnText:'删除',
                         btnType:'danger'
-                    },{
-                        btnText:'查看二维码',
-                        btnType:'success'
                     }
                 ],
                 pageData:{
@@ -392,7 +393,7 @@
                             message: '已取消删除'
                         });          
                     });
-                }else if(data.btnText === "查看二维码"){
+                }else if(data.btnText === "详情"){
                     let params = {
                         id:data.tableData.id
                     }

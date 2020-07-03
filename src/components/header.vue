@@ -3,10 +3,10 @@
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
             <el-submenu index="0" class='rightMnue' style="float:right">
                 <template slot="title">
-                    <img :src="headImg" alt="">
+                    <img :src="avatarUrl" alt="">
                 </template>
                 
-                <template slot="title">{{userName}}</template>
+                <template slot="title">欢迎你，{{realname?realname:username}}</template>
                 <el-menu-item @click="Tologout">退出登录</el-menu-item>
                 <el-menu-item index="center">个人中心</el-menu-item>
             </el-submenu>
@@ -32,13 +32,13 @@
         :visible.sync="drawer"
         :before-close="handleClose">
             <div>
-                <el-avatar :size="60" :src="headImg">
+                <el-avatar :size="60" :src="avatarUrl">
                     <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
                 </el-avatar>
                 <p>
-                    <span>{{userName}}</span>        
+                    <span>{{realname}}</span>        
                 </p>
-                <p v-if="!(userName == '未登陆')">
+                <p v-if="!(realname == '未登陆')">
                     <span class="fileinput-button">
                         <span>更换头像 </span>  
                         <input type="file" @change="changeDrawer">
@@ -79,11 +79,17 @@
                 </el-dialog>
                 <div class="submitform">
                     <el-form ref="form" :model="form" label-width="80px">
-                        <el-form-item label="姓名">
-                            <el-input v-model="form.name"></el-input>
+                        <el-form-item label="用户名">
+                            <el-input v-model="username" disabled></el-input>
                         </el-form-item>
-                        <el-form-item label="密码">
-                            <el-input v-model="form.name"></el-input>
+                         <el-form-item label="姓名">
+                            <el-input v-model="realname"></el-input>
+                        </el-form-item>
+                        <el-form-item label="原密码">
+                            <el-input v-model="form.oldpassword"></el-input>
+                        </el-form-item>
+                        <el-form-item label="新密码">
+                            <el-input v-model="form.newpassword"></el-input>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="onSubmit">提交</el-button>
@@ -102,9 +108,10 @@
         data () {
             return {
                 imgUrl:'http://127.0.0.1:3000/public/image/',
-                headImg:'/static/img/timg.b0786fb.jpg',
+                avatarUrl: require("@/assets/timg.jpg"),
                 activeIndex:'1',
-                userName:'未登陆',
+                realname:'',
+                username:null,
                 drawer: false,
                 form:{},
                 imgdialogVisible:false,
@@ -129,9 +136,8 @@
         },
         created(){
             let userInfo = JSON.parse(localStorage.getItem('userInfo'))[0]
-            this.userName ='欢迎你，'+ (userInfo.realname?userInfo.realname:userInfo.username)
-
-            console.log(this.headImg)
+            this.username = userInfo.username?userInfo.username:userInfo.username
+            this.realname = userInfo.realname
         },
         methods:{
             handleSelect(key, keyPath) {
@@ -168,7 +174,7 @@
                     }
                     upload(params).then(res=>{
                         if(res.code == 0){
-                            this.headImg = this.imgUrl+res.data.name
+                            this.avatarUrl = this.imgUrl+res.data.name
                             this.imgdialogVisible = false
                         }
                     })
