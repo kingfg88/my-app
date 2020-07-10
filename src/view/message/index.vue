@@ -1,11 +1,11 @@
 <template>
-    <div class='center'>
-        <h1>个人中心</h1>
+    <div class='form'>
+        <h1>消息管理</h1>
     </div>
 </template>
 <script>
     export default {
-        name: 'center',
+        name: 'Form',
         data () {
             return {
 

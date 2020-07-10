@@ -1,4 +1,5 @@
 import axios from 'axios';
+import router from '../router/index'
 import { MessageBox, Message ,Loading } from 'element-ui'
 
 const service = axios.create({
@@ -43,6 +44,23 @@ service.interceptors.response.use(
         }
     },
     error => {
+        if(error.response.status === 401){
+            router.replace({
+                path:'/401',
+                query:{redirect:router.currentRoute.fullPath}
+            })
+            // MessageBox.confirm('登录过期,请重新登录', '确认注销', {
+            //     confirmButtonText: '重新登录',
+            //     cancelButtonText: '取消',
+            //     type: 'warning'
+            // }).then(() => {
+            //     //跳转到登陆页并携带参数为当前路由地址
+            //     router.replace({
+            //         path:'/login',
+            //         query:{redirect:router.currentRoute.fullPath}
+            //     })
+            // })
+        }
         return Promise.reject(error)
     }
 )

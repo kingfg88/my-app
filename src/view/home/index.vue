@@ -301,7 +301,6 @@
                 let data = this.serchData
                 data.page = this.pageData.current,
                 data.size = this.pageData.size
-                console.log(data)
                 this.getData(data)
             },
             Toadd(){
@@ -444,16 +443,20 @@
     }
 </script>
 <style scoped lang='scss'>
-.serchBox{
-    padding:1rem;
-    display: flex;
-    display: -webkit-flex;
-    .el-input{
-        width:140px;
-        margin-right:1rem;
-    }
-    .el-range-editor.el-input__inner{
-        margin-right:1rem;
-    }
-}
+    //首页弹出框
+    .diologform{
+        .el-dialog__body{
+            width:70%;
+            margin-left:1rem;
+            .el-select{
+                display: block;
+            }
+            .el-date-editor.el-input{
+                width:100%;
+            }
+            .el-cascader{
+                width:100%;
+            }
+        }
+    } 
 </style>

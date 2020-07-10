@@ -1,7 +1,7 @@
 <template>
     <div class='home'>
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-            <el-submenu index="0" class='rightMnue' style="float:right">
+            <el-submenu index="my" class='rightMnue' style="float:right">
                 <template slot="title">
                     <img :src="avatarUrl" alt="">
                 </template>
@@ -14,19 +14,17 @@
                 <img src="../assets/logo.jpg" alt="">
             </el-menu-item>
             <el-menu-item index="home">首页</el-menu-item>
-            <el-submenu index="2">
+            <el-submenu index="workbench">
                 <template slot="title">我的工作台</template>
-                <el-menu-item index="2-1">选项1</el-menu-item>
-                <el-menu-item index="2-2">选项2</el-menu-item>
-                <el-menu-item index="2-3">选项3</el-menu-item>
-                <el-submenu index="2-4">
-                <template slot="title">选项4</template>
-                <el-menu-item index="2-4-1">选项1</el-menu-item>
-                <el-menu-item index="2-4-2">选项2</el-menu-item>
-                <el-menu-item index="2-4-3">选项3</el-menu-item>
+                <el-menu-item index="articleManagement">文章管理</el-menu-item>
+                <el-submenu index="material">
+                <template slot="title">素材管理</template>
+                <el-menu-item index="imageManagement">图片管理</el-menu-item>
+                <el-menu-item index="videoManagement">视频管理</el-menu-item>
+                <el-menu-item index="audioManagement">音频管理</el-menu-item>
                 </el-submenu>
             </el-submenu>
-            <el-menu-item index="form">消息中心</el-menu-item>
+            <el-menu-item index="message">消息中心</el-menu-item>
         </el-menu>
         <el-drawer
         :visible.sync="drawer"
@@ -135,18 +133,24 @@
             }
         },
         created(){
-            let userInfo = JSON.parse(localStorage.getItem('userInfo'))[0]
-            this.username = userInfo.username?userInfo.username:userInfo.username
-            this.realname = userInfo.realname
+            if(localStorage.getItem('userInfo')){
+                let userInfo = JSON.parse(localStorage.getItem('userInfo'))[0]
+                this.username = userInfo.username?userInfo.username:userInfo.username
+                this.realname = userInfo.realname
+            }
         },
         methods:{
             handleSelect(key, keyPath) {
-                if(key == 'center'){
-                    this.drawer = true 
+                let url = `/${keyPath.join('/')}`
+                if(url && this.$route.path != url){
+                    if(url.indexOf('/my') == -1){
+                        this.$router.push(url)
+                    }else if(url == '/my/center'){
+                        this.drawer = true
+                    }else{
+                        return
+                    }
                 }
-                // if(this.$route.path != `/${key}`){
-                //     this.$router.push(key)
-                // }
             },
             //更换头像
             changeDrawer(e){
@@ -199,7 +203,7 @@
                     });
                     localStorage.removeItem('accessToken')
                     localStorage.removeItem('userInfo')
-                    this.$router.push('/')
+                    this.$router.push('/login')
                 }).catch(() => {
                     this.$message({
                         type: 'info',

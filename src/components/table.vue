@@ -1,7 +1,8 @@
 <template>
     <div class='plugtable'>
         <el-table :data="tableData" border style="width: 100%">
-            <el-table-column v-for="ele in headData" :key="ele.index" :prop="ele.prop" :label="ele.label"></el-table-column>
+            <el-table-column v-for="ele in headData" :key="ele.index" :prop="ele.prop" :label="ele.label" show-overflow-tooltip>
+            </el-table-column>
             <!-- 操作按钮 -->
             <el-table-column fixed="right" label="操作" width="250">
                 <template slot-scope="scope">

@@ -2,14 +2,14 @@ import request from './index'
 
 export function login(data) {
     return request({
-      url: '/login',
+      url: '/user/login',
       method:'post',
       data:data
     })
 }
 export function registe(data) {
   return request({
-    url: '/registe',
+    url: '/user/registe',
     method:'post',
     data:data
   })
@@ -17,14 +17,7 @@ export function registe(data) {
 
 export function userInfo() {
   return request({
-    url: '/userInfo',
-    method:'get'
-  })
-}
-
-export function test() {
-  return request({
-    url: '/test',
+    url: '/user/userInfo',
     method:'get'
   })
 }

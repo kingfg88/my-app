@@ -1,6 +1,7 @@
 <template>
     <div class='pagenation'>
         <el-pagination
+            v-if="pageData.total"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageData.current"
@@ -15,11 +16,6 @@
     export default {
         name: 'pagenation',
         props:['pageData'],
-        data () {
-            return {
-
-            }
-        },
         methods:{
             handleSizeChange(val) {
                 let data = {
