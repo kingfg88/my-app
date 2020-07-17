@@ -13,20 +13,8 @@
                 end-placeholder="发布结束日期"
                 align="right">
             </el-date-picker>
-            <el-button class="SerchBtn" type="info" @click="Tosearch">查询</el-button>
+            <el-button class="SerchBtn" type="" @click="Tosearch">查询</el-button>
             <el-button class="SerchBtn" type="primary" @click="Toadd">新增</el-button>
-            <!-- <el-button class="btn" type="success">导入Excel</el-button> -->
-            <el-upload
-                class="upload-btn"
-                :headers="headers"
-                :action="baseUrl+'/article/importArticle'"
-                :beforeUpload = "uploadBefore"
-                :on-success = "uploadSuccess"
-                :show-file-list="false"
-                :multiple="false">
-                <el-button class="SerchBtn" type="success">导入Excel</el-button>
-            </el-upload>
-            <el-button class="SerchBtn" type="warning">导出Excel</el-button>
         </div>
         <plugTable :headData="headData" :tableData="tableData" :btnData="btnData" @func="getMsgFormSon"/>
         <plugPage :pageData="pageData" @pagefun="getpageSon" />
@@ -173,8 +161,8 @@ export default {
             dialogVisible: false,
             isClear: false,
             form:{
-                name:null,
-                content:null
+                name:'',
+                content:''
             },
             edirID:null,
             baseUrl:null,
@@ -258,13 +246,11 @@ export default {
                                     message: res.msg,
                                     type: 'success'
                                 });
-                                this.initData()
+                                let data = {}
+                                data.page = this.pageData.current,
+                                data.size = this.pageData.size
+                                this.initData(data)
                                 this.handleClose()
-                                this.pageData = {
-                                    current:1,
-                                    size:10,
-                                    total:null
-                                }
                             }else{
                                 this.$message.error(res.msg);
                             }
@@ -278,7 +264,10 @@ export default {
         },
         //关闭弹窗
         handleClose(){
-            this.form = {}
+            this.form = {
+                name:'',
+                content:''
+            }
             this.isClear = true
             this.$refs['form'].clearValidate();
             this.dialogFormVisible = false;
@@ -361,13 +350,17 @@ export default {
         },
         //导入Excel
         uploadBefore(file){
-            if(file.name.substring(file.name.lastIndexOf('.')+1) != 'xlsx'){
-                this.$message.warning('只能上传xlsx类型的文件！')
-                return
+            let type = file.name.substring(file.name.lastIndexOf('.')+1)
+            console.log(type)
+            if( type!= 'xlsx' && type != 'xls'){
+                this.$message.warning('只能上传xls/xlsx类型的文件！')
+                return false
             }
         },
-        uploadSuccess(response, file, fileList){
-            console.log(response)
+        uploadSuccess(res, file, fileList){
+            if(res.code == 0){
+                this.initData()
+            }
         }
     },
 }
@@ -376,7 +369,6 @@ export default {
 <style scoped lang="scss">
 .el-form-item{
     .el-input{
-        display:block;
         width:24rem;
     }
 }

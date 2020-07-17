@@ -7,7 +7,7 @@ import Login from '../view/user/login'
 import index from '../view/index'
 
 import Home from '../view/home/index'
-import message from '../view/message/index'
+import person from '../view/person/index'
 import workbench from '../view/workbench/index'
 import articleManagement from '../view/workbench/articleManagement'
 import imageManagement from '../view/workbench/material/imageManagement'
@@ -64,9 +64,9 @@ export default new Router({
           ]
         },
         {
-          path: '/message',
-          name: 'message',
-          component: message
+          path: '/person',
+          name: 'person',
+          component: person
         },
       ]
     },

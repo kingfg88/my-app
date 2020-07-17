@@ -21,3 +21,11 @@ export function userInfo() {
     method:'get'
   })
 }
+
+export function editInformation(data){
+  return request({
+    url:'/user/editInformation',
+    method:'post',
+    data:data
+  })
+}

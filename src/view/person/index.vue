@@ -1,8 +1,15 @@
 <template>
-    <div class='home'>
+    <div class='person'>
         <div class="serchBox">
-            <el-input placeholder="请输入姓名" v-model="serchData.name" clearable></el-input>
-            <el-input placeholder="请输入俱乐部" v-model="serchData.club" clearable></el-input>
+            <el-input placeholder="请输入用户名" v-model="serchData.name" clearable></el-input>
+            <el-select v-model="serchData.role" placeholder="请选择角色" clearable>
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
             <el-date-picker
                 v-model="serchData.time"
                 type="datetimerange"
@@ -13,63 +20,23 @@
                 end-placeholder="结束日期"
                 align="right">
             </el-date-picker>
-            <el-button class="btn" type="info" @click="Tosearch" style="margin-left:10px;">查询</el-button>
+            <el-button class="btn" type="success" @click="Tosearch" style="margin-left:10px;">查询</el-button>
             <el-button class="btn" type="primary" @click="Toadd">新增</el-button>
-            <el-button class="btn" type="success">导入</el-button>
-            <el-button class="btn" type="warning">导出</el-button>
         </div>
         <plugTable :headData="headData" :tableData="tableData" :btnData="btnData" @func="getMsgFormSon"/>
         <plugPage :pageData="pageData" @pagefun="getpageSon" />
         <!-- 新增编辑弹窗 -->
         <el-dialog :title="dialogTitle" v-if="dialogFormVisible" :visible.sync="dialogFormVisible" class="diologform" width="40%" :before-close="handleClose">
             <el-form :model="ruleform" ref="refForm" :rules="rules">
-                <el-form-item label="日期" :label-width="formLabelWidth" prop="time">
-                    <el-date-picker
-                        clearable
-                        v-model="ruleform.time"
-                        type="datetime"
-                        :picker-options="pickerOptions"
-                        value-format="yyyy-MM-dd HH:mm:ss"
-                        placeholder="选择日期时间">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="名称" :label-width="formLabelWidth" prop="name">
+                <el-form-item label="用户名" :label-width="formLabelWidth" prop="name">
                     <el-input v-model="ruleform.name" placeholder="选请输入名称" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="司职" :label-width="formLabelWidth" prop="secretary">
-                    <el-select v-model="ruleform.secretary" placeholder="请选择区域" clearable>
-                        <el-option label="前锋" value="前锋"></el-option>
-                        <el-option label="中锋" value="中锋"></el-option>
-                        <el-option label="后卫" value="后卫"></el-option>
-                        <el-option label="守门员" value="守门员"></el-option>
+                <el-form-item label="角色" :label-width="formLabelWidth" prop="role">
+                    <el-select v-model="ruleform.role" placeholder="请选择区域" clearable>
+                        <el-option label="副管理员" value="副管理员"></el-option>
+                        <el-option label="编辑员" value="编辑员"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="俱乐部" :label-width="formLabelWidth" prop="club">
-                    <el-cascader
-                        clearable
-                        v-model="ruleform.club"
-                        placeholder="可搜索"
-                        :options="options"
-                        :show-all-levels="false"
-                        @change="clubChange"
-                        filterable>
-                    </el-cascader>
-                </el-form-item>
-                <!-- <el-form-item label="俱乐部logo" :label-width="formLabelWidth" prop="img">
-                    <el-upload
-                        v-model="ruleform.img"
-                        class="avatar-uploader"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        list-type="picture-card"
-                        :on-preview="handlePictureCardPreview"
-                        :on-remove="handleRemove"
-                        :on-success="handleSuccess">
-                        <i class="el-icon-plus"></i>
-                    </el-upload>
-                    <el-dialog :visible.sync="dialogVisible">
-                        <img width="100%" :src="dialogImageUrl" alt="">
-                    </el-dialog>
-                </el-form-item> -->
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="handleClose()">取 消</el-button>
@@ -81,33 +48,29 @@
 <script>
     import plugTable from '../../components/table'
     import plugPage from '../../components/pagenation'
-    import { getplayer,addplayer,editplayer,delplayer } from '../../api/player'
+    import { getperson,addperson,editperson,delperson } from '../../api/person'
     export default {
-        name: 'Home',
+        name: 'person',
         components:{plugTable,plugPage},
         data () {
             return {
                 headData:[
                     {
                         prop:'time',
-                        label:'加入时间'
+                        label:'添加时间'
                     },{
                         prop:'name',
                         label:'姓名'
                     },{
-                        prop:'secretary',
-                        label:'司职'
+                        prop:'role',
+                        label:'角色'
                     },{
-                        prop:'club',
-                        label:'俱乐部'
+                        prop:'addperson',
+                        label:'添加人'
                     }
                 ],
                 tableData: [],
                 btnData:[
-                    {
-                        btnText:'详情',
-                        btnType:'success'
-                    },
                     {
                         btnText:'编辑',
                         btnType:'primary'
@@ -116,6 +79,13 @@
                         btnType:'danger'
                     }
                 ],
+                options: [{
+                    value: '副管理员',
+                    label: '副管理员'
+                    }, {
+                    value: '编辑员',
+                    label: '编辑员'
+                }],
                 pageData:{
                     current:1,
                     size:10,
@@ -131,14 +101,11 @@
                         { required: true, message: '请选择时间', trigger: 'change' }
                     ],
                     name: [
-                        { required: true, message: '请输入名称', trigger: 'blur' },
+                        { required: true, message: '请输入用户名', trigger: 'blur' },
                         { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
                     ],
-                    secretary: [
-                        { required: true, message: '请选择司职', trigger: 'change' }
-                    ],
-                    club: [
-                        { required: true, message: '请选择俱乐部', trigger: 'change' }
+                    role: [
+                        { required: true, message: '请选择角色', trigger: 'change' }
                     ],
                 },
                 searchPicker: {
@@ -168,111 +135,12 @@
                         }
                     }]
                 },
-                pickerOptions: {
-                    shortcuts: [{
-                        text: '今天',
-                        onClick(picker) {
-                        picker.$emit('pick', new Date());
-                        }
-                    }, {
-                        text: '昨天',
-                        onClick(picker) {
-                        const date = new Date();
-                        date.setTime(date.getTime() - 3600 * 1000 * 24);
-                        picker.$emit('pick', date);
-                        }
-                    }, {
-                        text: '一周前',
-                        onClick(picker) {
-                        const date = new Date();
-                        date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-                        picker.$emit('pick', date);
-                        }
-                    }]
-                },
-                options:[
-                    {
-                        value: '西甲',
-                        label: '西甲',
-                        children:[
-                            {
-                                value:'皇家马德里',
-                                label:'皇家马德里'
-                            },
-                            {
-                                value:'巴塞罗那',
-                                label:'巴塞罗那'
-                            },
-                            {
-                                value:'西班牙人',
-                                label:'西班牙人'
-                            },
-                            {
-                                value:'马德里竞技',
-                                label:'马德里竞技'
-                            },
-                        ],
-                    },{
-                        value: '英超',
-                        label: '英超',
-                        children:[
-                            {
-                                value:'曼彻斯特联',
-                                label:'曼彻斯特联'
-                            },
-                            {
-                                value:'利物浦',
-                                label:'利物浦'
-                            },
-                            {
-                                value:'阿森纳',
-                                label:'阿森纳'
-                            },{
-                                value:'切尔西',
-                                label:'切尔西'
-                            },{
-                                value:'热刺',
-                                label:'热刺'
-                            },
-                        ],
-                    },{
-                        value: '意甲',
-                        label: '意甲',
-                        children:[
-                            {
-                                value:'罗马',
-                                label:'罗马'
-                            },
-                            {
-                                value:'尤文图斯',
-                                label:'尤文图斯'
-                            },
-                            {
-                                value:'国际米兰',
-                                label:'国际米兰'
-                            },
-                            {
-                                value:'AC米兰',
-                                label:'AC米兰'
-                            },
-                            {
-                                value:'拉齐奥',
-                                label:'拉齐奥'
-                            },
-                            {
-                                value:'佛罗伦萨',
-                                label:'佛罗伦萨'
-                            },
-                        ],
-                    },
-                ],
                 dialogImageUrl:'',
                 dialogVisible: false
             }
         },
         created(){
             this.initData()
-            // console.log(this.$moment(963652505000).format('YYYY-MM-DD  HH:mm:ss'))
         },
         methods:{
             initData(){
@@ -283,17 +151,17 @@
                 this.getData(data)
             },
             getData(data){
-                getplayer(data).then((res)=>{
+                getperson(data).then((res)=>{
                     if(res.code == 0){
                         this.tableData = []
                         this.pageData.total = res.total
                         res.data.forEach(ele => {
                             this.tableData.push({
-                                tid:ele.tid,
+                                id:ele.id,
                                 time:ele.time,
                                 name:ele.name,
-                                secretary:ele.secretary,
-                                club:ele.club.split(',')
+                                role:ele.role,
+                                addperson:ele.addperson
                             })
                         });
                     }
@@ -311,10 +179,11 @@
             },
             addData(formName){
                 let data = this.ruleform
+                data.addperson = JSON.parse(localStorage.getItem('userInfo'))[0].realname
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         if(this.dialogTitle === '新增'){
-                            addplayer(data).then((res)=>{
+                            addperson(data).then((res)=>{
                                 if(res.code == 0){
                                     this.$message({
                                         message: res.msg,
@@ -333,7 +202,7 @@
                                 }
                             })
                         }else if(this.dialogTitle === '编辑'){
-                            editplayer(data).then((res)=>{
+                            editperson(data).then((res)=>{
                                 if(res.code == 0){
                                     this.$message({
                                         message: res.msg,
@@ -366,9 +235,9 @@
                         type: 'warning'
                     }).then(() => {
                         let data = {
-                            tid:val.tableData.tid
+                            id:val.tableData.id
                         }
-                        delplayer(data).then((res)=>{
+                        delperson(data).then((res)=>{
                             if(res.code == 0){
                                 this.$message({
                                     type: 'success',
@@ -418,9 +287,6 @@
                 this.ruleform = {}
                 this.$refs['refForm'].clearValidate();
                 this.dialogFormVisible = false;
-            },
-            clubChange(val){
-                this.form.ruleform.club = val
             },
             handleRemove(file, fileList) {
                 document.getElementsByClassName('.el-upload--picture-card').style.visibility='hidden'

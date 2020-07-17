@@ -4,7 +4,7 @@
             v-if="pageData.total"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page="pageData.current"
+            :current-page.sync="pageData.current"
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pageData.size"
             layout="total, sizes, prev, pager, next, jumper"
@@ -16,6 +16,9 @@
     export default {
         name: 'pagenation',
         props:['pageData'],
+        created(){
+            // console.log(this.pageData)
+        },
         methods:{
             handleSizeChange(val) {
                 let data = {

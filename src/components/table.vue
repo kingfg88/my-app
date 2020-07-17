@@ -48,7 +48,5 @@
     }
 </script>
 <style scoped lang='scss'>
-    .plugtable{
-        padding:0 1rem 1rem 1rem;
-    }
+    
 </style>

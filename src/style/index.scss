@@ -5,7 +5,7 @@ html {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
+    // text-align: center;
     color: #2c3e50;
     width:100vw;
     height:100vh;
@@ -50,5 +50,25 @@ body,#app{
 //导入以及导出按钮
 .SerchBtn{
     margin-left:10px;
+}
+//公共table
+.el-table--border th{
+    background:rgb(238, 244, 254)
+}
+.plugtable{
+    padding:0 1rem 1rem 1rem;
+}
+.el-table .cell img{
+    border-radius: 8px;
+    width:70px;
+    height:70px;
+}
+//弹框顶部颜色
+.el-dialog__header{
+    background:#eef4fe;
+}
+//播放器点击取消边框
+audio,video{
+    outline:none
 }
 

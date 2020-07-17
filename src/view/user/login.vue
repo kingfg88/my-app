@@ -58,6 +58,12 @@
         created(){
             // console.log(this.$store.state.title)
             // console.log(this.$route.query.redirect)
+            document.onkeydown = (e)=>{
+                e = window.event || e;
+                if(this.$route.path=='/login'&&(e.code=='NumpadEnter'||e.code=='Enter')){//验证在登录界面和按得键是回车键
+                    this.ToLogin('ruleForm',this.islogin);//登录函数
+                }
+            }
         },
         methods:{
             showWord(){

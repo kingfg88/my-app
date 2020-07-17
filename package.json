@@ -10,9 +10,11 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@liripeng/vue-audio-player": "^1.0.6",
     "axios": "^0.19.2",
     "element-ui": "^2.13.2",
     "js-sha256": "^0.9.0",
+    "moment": "^2.27.0",
     "vue": "^2.5.2",
     "vue-cropper": "^0.5.4",
     "vue-router": "^3.0.1",

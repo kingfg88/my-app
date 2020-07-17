@@ -6,7 +6,7 @@
                     <img :src="avatarUrl" alt="">
                 </template>
                 
-                <template slot="title">欢迎你，{{realname?realname:username}}</template>
+                <template slot="title">欢迎你，{{form.realname?form.realname:form.username}}</template>
                 <el-menu-item @click="Tologout">退出登录</el-menu-item>
                 <el-menu-item index="center">个人中心</el-menu-item>
             </el-submenu>
@@ -24,19 +24,19 @@
                 <el-menu-item index="audioManagement">音频管理</el-menu-item>
                 </el-submenu>
             </el-submenu>
-            <el-menu-item index="message">消息中心</el-menu-item>
+            <el-menu-item index="person">人员管理</el-menu-item>
         </el-menu>
         <el-drawer
         :visible.sync="drawer"
         :before-close="handleClose">
-            <div>
+            <div class="myform">
                 <el-avatar :size="60" :src="avatarUrl">
                     <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"/>
                 </el-avatar>
                 <p>
-                    <span>{{realname}}</span>        
+                    <span>{{form.realname}}</span>        
                 </p>
-                <p v-if="!(realname == '未登陆')">
+                <p v-if="!(form.realname == '未登陆')">
                     <span class="fileinput-button">
                         <span>更换头像 </span>  
                         <input type="file" @change="changeDrawer">
@@ -76,21 +76,24 @@
                     </span>
                 </el-dialog>
                 <div class="submitform">
-                    <el-form ref="form" :model="form" label-width="80px">
-                        <el-form-item label="用户名">
-                            <el-input v-model="username" disabled></el-input>
+                    <el-form ref="form" :rules="rules" :model="form" label-width="80px">
+                        <el-form-item label="用户名" prop="username">
+                            <el-input v-model="form.username" disabled></el-input>
                         </el-form-item>
-                         <el-form-item label="姓名">
-                            <el-input v-model="realname"></el-input>
+                         <el-form-item label="姓名" prop="realname">
+                            <el-input v-model="form.realname"></el-input>
                         </el-form-item>
-                        <el-form-item label="原密码">
-                            <el-input v-model="form.oldpassword"></el-input>
+                        <el-form-item label="原密码" prop="oldpassword">
+                            <el-input type="password" v-model="form.oldpassword"></el-input>
                         </el-form-item>
-                        <el-form-item label="新密码">
-                            <el-input v-model="form.newpassword"></el-input>
+                        <el-form-item label="新密码" prop="newpassword">
+                            <el-input type="password" v-model="form.newpassword"></el-input>
+                        </el-form-item>
+                        <el-form-item label="确认密码" prop="againnewpassword">
+                            <el-input type="password" v-model="form.againnewpassword"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="onSubmit">提交</el-button>
+                            <el-button type="primary" @click="onSubmit('form')">提交</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -101,17 +104,50 @@
 </template>
 <script>
     import { upload } from '../api/upload'
+    import { userInfo,editInformation } from '../api/user'
+    const sha256 = require('js-sha256').sha256
     export default {
         name: 'home',
         data () {
+            var validatenew = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入新密码'));
+                }else if(value == this.form.oldpassword){
+                    callback(new Error('不能与原密码相同'));
+                } else {
+                    callback();
+                }
+            };
+            var validateagain = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入确认密码'));
+                }else if(value != this.form.newpassword){
+                    callback(new Error('两次输入密码不相同'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 imgUrl:'http://127.0.0.1:3000/public/image/',
-                avatarUrl: require("@/assets/timg.jpg"),
                 activeIndex:'1',
-                realname:'',
-                username:null,
                 drawer: false,
-                form:{},
+                avatarUrl: require("@/assets/timg.jpg"),
+                form:{
+                    realname:'',
+                    username:null
+                },
+                rules:{
+                    oldpassword: [
+                        { required: true, message: '请输入原密码', trigger: 'blur' },
+                        { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+                    ],
+                    newpassword: [
+                        { required: true,validator: validatenew, trigger: 'blur' }
+                    ],
+                    againnewpassword: [
+                        { required: true,validator: validateagain, trigger: 'blur' }
+                    ],
+                },
                 imgdialogVisible:false,
                 option: {
                     img: '', // 裁剪图片的地址
@@ -134,9 +170,10 @@
         },
         created(){
             if(localStorage.getItem('userInfo')){
-                let userInfo = JSON.parse(localStorage.getItem('userInfo'))[0]
-                this.username = userInfo.username?userInfo.username:userInfo.username
-                this.realname = userInfo.realname
+                this.form = JSON.parse(localStorage.getItem('userInfo'))[0]
+                if(this.form.headportrait){
+                    this.avatarUrl = this.imgUrl+this.form.headportrait
+                }
             }
         },
         methods:{
@@ -164,28 +201,57 @@
             },
             //裁剪并提交
             imgSubmit(){
-                // this.$refs.cropper.getCropBlob((data) => {
-                //     console.log(data,555)
-                //     var params = new FormData();
-                //     params.append(data,this.option.img)
-                //     upload(params).then(res=>{
-                //         console.log(res)
-                //     })
-                // })
                 this.$refs.cropper.getCropData((data) => {
                     let params = {
-                        file:data
+                        file:data,
+                        uid:this.form.uid
                     }
                     upload(params).then(res=>{
                         if(res.code == 0){
                             this.avatarUrl = this.imgUrl+res.data.name
+                            this.$message({
+                                type:'success',
+                                message:res.msg
+                            })
                             this.imgdialogVisible = false
                         }
                     })
                 })
             },
-            onSubmit(){
-                
+            //修改提交
+            onSubmit(formName){
+                this.$refs[formName].validate((valid) => {
+                    if(valid){
+                        let params = {
+                            uid:this.form.uid,
+                            headportrait:this.form.avatarUrl,
+                            realname:this.form.realname,
+                            password:this.form.oldpassword?sha256(this.form.oldpassword):null,
+                            newpword:this.form.newpassword?sha256(this.form.newpassword):null
+                        }
+                        editInformation(params).then(res=>{
+                            if(res.code == 0){
+                                this.$alert(`${res.msg}，请重新登陆！`, '提示', {
+                                    confirmButtonText: '确定',
+                                    callback: action => {
+                                        localStorage.removeItem('accessToken')
+                                        localStorage.removeItem('userInfo')
+                                        this.$router.push('/login')
+                                        this.$message({
+                                            type: 'success',
+                                            message: '退出成功!'
+                                        });
+                                    }
+                                });
+                            }else if(res.code == -1){
+                                this.$message.error(res.msg)
+                            }
+                        })
+                    }else{
+                        console.log('error submit!!');
+                        return false;
+                    }
+                })
             },
             //关闭侧弹窗
             handleClose(){
@@ -225,9 +291,7 @@
     }
 }
 .rightMnue{
-    width:60px;
     height:60px;
-    width:12rem;
     .el-submenu__title{
         img{
             width:30px;
@@ -267,5 +331,8 @@
         width: auto;
         height: 300px;
     }
+}
+.myform{
+    text-align:center;
 }
 </style>
