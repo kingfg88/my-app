@@ -192,7 +192,7 @@ export default {
                     res.data.forEach(ele => {
                         this.tableData.push({
                             id:ele.id,
-                            time:ele.time,
+                            time:this.$moment(parseInt(ele.time)).format("YYYY-MM-DD HH:MM:SS"),
                             name:ele.name,
                             issuer:ele.issuer,
                             modifier:ele.modifier,

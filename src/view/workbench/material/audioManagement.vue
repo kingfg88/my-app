@@ -154,7 +154,7 @@ export default {
     created(){
         this.initData()
         this.baseUrl = process.env.BASE_API
-        this.baseAudioUrl = process.env.BASE_API+'/public/audio/'
+        this.baseAudioUrl = process.env.BASE_API+'/audio/'
         this.headers = {
             'authorization':`Bearer ${localStorage.getItem('accessToken')}`
         }

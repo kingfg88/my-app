@@ -2,7 +2,7 @@
     <div class='home'>
         <div class="serchBox">
             <el-input placeholder="请输入姓名" v-model="serchData.name" clearable></el-input>
-            <el-input placeholder="请输入俱乐部" v-model="serchData.club" clearable></el-input>
+            <el-input placeholder="请输入俱乐部" v-model="serchData.club" v-focus clearable></el-input>
             <el-date-picker
                 v-model="serchData.time"
                 type="datetimerange"
@@ -85,6 +85,16 @@
     export default {
         name: 'Home',
         components:{plugTable,plugPage},
+        directives:{
+            focus:{
+                bind:(el)=>{
+                    el.style.border='1px solid red'
+                }
+            },
+            editor:{
+
+            }
+        },
         data () {
             return {
                 headData:[

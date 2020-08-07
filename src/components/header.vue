@@ -128,7 +128,7 @@
                 }
             };
             return {
-                imgUrl:'http://127.0.0.1:3000/public/image/',
+                imgUrl:'',
                 activeIndex:'1',
                 drawer: false,
                 avatarUrl: require("@/assets/timg.jpg"),
@@ -165,10 +165,11 @@
                     centerBox: true, // 截图框是否被限制在图片里面
                     infoTrue: true // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
                 },
-                uploadfile:null,
+                uploadfile:null
             }
         },
         created(){
+            this.imgUrl = process.env.BASE_API+'/image/'
             if(localStorage.getItem('userInfo')){
                 this.form = JSON.parse(localStorage.getItem('userInfo'))[0]
                 if(this.form.headportrait){

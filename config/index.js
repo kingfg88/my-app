@@ -10,16 +10,16 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {
-      '/api': {
-         // 当你请求是以/api开头的时候，则代理访问到http://127.0.0.1:3000
-        target: "http://127.0.0.1:3000", //真是服务器接口是没有/api的 config环境去配置与api一致
-        changeOrigin: true, // 如果设置为true,发送请求头中host会设置成target的地址
-        pathRewrite: {
-          '^/api': '' // 重写路径
-        }
-      }
-    },
+    // proxyTable: {
+    //   '/api': {
+    //      // 当你请求是以/api开头的时候，则代理访问到http://127.0.0.1:3000
+    //     target: "http://127.0.0.1:3000", //真是服务器接口是没有/api的 config环境去配置与api一致
+    //     changeOrigin: true, // 如果设置为true,发送请求头中host会设置成target的地址
+    //     pathRewrite: {
+    //       '^/api': '' // 重写路径
+    //     }
+    //   }
+    // },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

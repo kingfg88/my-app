@@ -66,7 +66,7 @@
                         label:'角色'
                     },{
                         prop:'addperson',
-                        label:'添加人'
+                        label:'授权人'
                     }
                 ],
                 tableData: [],
@@ -158,7 +158,7 @@
                         res.data.forEach(ele => {
                             this.tableData.push({
                                 id:ele.id,
-                                time:ele.time,
+                                time:this.$moment(parseInt(ele.time)).format("YYYY-MM-DD HH:MM:SS"),
                                 name:ele.name,
                                 role:ele.role,
                                 addperson:ele.addperson

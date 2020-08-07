@@ -137,7 +137,7 @@ export default {
     created(){
         this.initData()
         this.baseUrl = process.env.BASE_API
-        this.baseImgUrl = process.env.BASE_API+'/public/image/'
+        this.baseImgUrl = process.env.BASE_API+'/image/'
         this.headers = {
             'authorization':`Bearer ${localStorage.getItem('accessToken')}`
         }
